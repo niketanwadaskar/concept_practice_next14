@@ -28,7 +28,7 @@ export default function LoginPage({ searchParams }: PageProps) {
     await signIn("credentials", {
       username: inputs.username,
       password: inputs.password,
-      callbackUrl: "/abc",
+      callbackUrl: "/",
     });
   };
   return (
@@ -88,11 +88,11 @@ export default function LoginPage({ searchParams }: PageProps) {
                 Sign in
               </button>
             </div>
-            {searchParams.error && (
+            {/* {searchParams.error && (
               <p className="text-red-600 text-center capitalize">
                 Login failed.
               </p>
-            )}
+            )} */}
           </form>
         </div>
       </div>

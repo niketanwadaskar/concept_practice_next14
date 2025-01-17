@@ -1,11 +1,11 @@
 
 // import UserInfo from "@/components/UserInfo";
 import UserInfo from "@/components/UserInfo";
-import { getServerAuthSession } from "@/server/auth";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 
 export default async function HomePage() {
-  const authSession = await getServerAuthSession(); //(1) 
+  const authSession =  getServerSession();
 
   return (  
   <main className="flex items-center justify-center h-screen">
