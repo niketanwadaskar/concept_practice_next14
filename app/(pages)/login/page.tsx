@@ -1,6 +1,8 @@
 "use client";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
 type LoginInput = {
   username: string;
@@ -17,6 +19,9 @@ export default function LoginPage({ searchParams }: PageProps) {
     password: "",
   });
 
+  const router = useRouter()
+
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -25,11 +30,17 @@ export default function LoginPage({ searchParams }: PageProps) {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       username: inputs.username,
       password: inputs.password,
-      callbackUrl: "/",
+      redirect: false,
     });
+    if (res?.ok) {
+      toast.success("Login successful");
+      router.push('/')
+    } else {
+      toast.error(res?.error);
+    }
   };
   return (
     <>
