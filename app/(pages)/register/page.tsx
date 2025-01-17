@@ -1,26 +1,31 @@
-// pages/register.tsx
-import { useState, ChangeEvent, FormEvent } from 'react';
+"use client";
+import { useState, ChangeEvent, FormEvent } from "react";
 
 const Register = () => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+
+  function generateId() {
+    return Math.random().toString(36).substring(7);
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
+    console.log("slkdmasld", name, email, password);
+    const res = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password , id: generateId()}),
     });
 
-    const data = await res.json();
+    const data = await res;
+    console.log(data, "😂😂😂😂");
     if (res.ok) {
-      alert('User created!');
+      alert("User created!");
     } else {
-      setError(data.message || 'Error');
+      setError(data.message || "Error");
     }
   };
 
@@ -32,26 +37,32 @@ const Register = () => {
           type="text"
           placeholder="Name"
           value={name}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setName(e.target.value)
+          }
           required
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
           required
         />
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
           required
         />
         <button type="submit">Register</button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

@@ -1,48 +1,59 @@
-// pages/api/auth/register.ts
-import { NextApiRequest, NextApiResponse } from 'next';
-import bcrypt from 'bcryptjs';
-import { query } from '@/lib/db';
-// import { query } from '../../../lib/db';
+import { query } from "@/lib/db";
+import { hashPassword } from "@/utils/hashPassword";
 
-interface RegisterRequestBody {
-  name: string;
-  email: string;
-  password: string;
-}
+// Disable body parsing
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === 'POST') {
-    const { name, email, password }: RegisterRequestBody = req.body;
+async function handler(req: any) {
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ message: "Method not allowed." }), {
+      status: 405,
+    });
+  }
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    const { name, email, password } = await (req.json() as {
+      name: string;
+      email: string;
+      password: string;
+    });
 
-    try {
-      // Check if the email already exists
-      const existingUser = await query('SELECT * FROM users WHERE email = $1', [email]);
-      if (existingUser.length > 0) {
-        return res.status(400).json({ message: 'Email already in use.' });
-      }
-
-      // Insert the new user into the database
-      const result = await query(
-        'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',
-        [name, email, hashedPassword]
+    if (!name || !email || !password) {
+      return new Response(
+        JSON.stringify({ message: "Name, email, and password are required." }),
+        { status: 400 }
       );
-
-      const newUser = result[0];
-      return res.status(201).json({
-        message: 'User created',
-        user: { id: newUser.id, name: newUser.name, email: newUser.email },
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: 'Internal server error' });
     }
-  } else {
-    return res.status(405).json({ message: 'Method Not Allowed' });
+
+    const hashedPassword = hashPassword(password);
+
+    // Check if email exists
+    const existingUser = await query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    if (existingUser.length > 0) {
+      return new Response(
+        JSON.stringify({ message: "Email already exists." }),
+        { status: 400 }
+      );
+    }
+
+    // Insert into DB
+    const result = await query(
+      "INSERT INTO users (id, name, email, password,age) VALUES ( uuid_generate_v4(), $1, $2, $3, $4) RETURNING *",
+      [name, email, hashedPassword, 24]
+    );
+    const newUser = result[0];
+
+    return new Response(JSON.stringify(newUser), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error }), { status: 500 });
   }
 }
+
+export { handler as POST };

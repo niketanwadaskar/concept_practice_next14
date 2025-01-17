@@ -16,6 +16,9 @@ export default function UserInfo({ user }: UserInfoProps) {
 
   return (
     <div className="rounded-lg border shadow-lg p-10">
+      <h1 className="text-2xl font-bold">
+        User info
+      </h1>
       <div>Id : {user.id}</div>
       <div>Name : {user.name}</div>
       <div>Email : {user.email}</div>
