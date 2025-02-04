@@ -17,9 +17,9 @@ export default function HomePage() {
   useEffect(() => {
     fun();
   }, []);
-  if (status === "loading") {
-    return <p>Loading...</p>; // Optionally show loading state while the session is being fetched
-  }
+  // if (status === "loading") {
+  //   return <p>Loading...</p>; // Optionally show loading state while the session is being fetched
+  // }
 
   return (
     <main className="flex items-center justify-center h-screen">
