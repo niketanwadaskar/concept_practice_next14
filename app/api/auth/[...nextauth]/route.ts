@@ -66,6 +66,7 @@ const authOptions = {
         return null; // Authorization failed
       },
     }),
+    
   ],
   session: {
     strategy: "jwt" as SessionStrategy,

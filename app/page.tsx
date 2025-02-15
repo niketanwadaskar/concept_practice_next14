@@ -1,5 +1,6 @@
 "use client";
 
+import QueOne from "@/components/QueOne";
 import UserInfo from "@/components/UserInfo"; // Import UserInfo component
 import { Session } from "next-auth";
 import { getSession } from "next-auth/react"; // Import the hook to get session data
@@ -17,12 +18,13 @@ export default function HomePage() {
   useEffect(() => {
     fun();
   }, []);
-  if (status === "loading") {
-    return <p>Loading...</p>; // Optionally show loading state while the session is being fetched
-  }
+  // if (status === "loading") {
+  //   return <p>Loading...</p>; // Optionally show loading state while the session is being fetched
+  // }
 
   return (
     <main className="flex items-center justify-center h-screen">
+      <QueOne/>
       {/* Check if session exists and render UserInfo */}
       {session ? (
         <UserInfo user={session.user} />
